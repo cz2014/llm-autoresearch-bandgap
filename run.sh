@@ -6,9 +6,10 @@
 set -u
 REPO="$(cd "$(dirname "$0")" && pwd)"
 export PATH="$HOME/.local/bin:$PATH"
-unset ANTHROPIC_API_KEY
+unset ANTHROPIC_API_KEY              # force subscription (Max) billing; never API credits
+export CLAUDE_CODE_EFFORT_LEVEL=max  # highest adaptive-reasoning budget for Opus 4.8 (low<med<high<xhigh<max)
 cd "$REPO"
-MODEL="sonnet"
+MODEL="opus"                         # bare alias -> Claude Opus 4.8 (latest, most capable)
 
 PROMPT="You are the autonomous researcher described in program.md. Read program.md and run its 'Loop \
 (forever)' section CONTINUOUSLY, in this single session. Your FIRST action after setup is the BASELINE \
