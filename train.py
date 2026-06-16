@@ -270,7 +270,7 @@ class CrystalGNN(nn.Module):
         return self.readout(hg).squeeze(-1)
 
 
-model = CrystalGNN(num_elem=len(ELEMENTS), dim=96, n_layers=4, n_rbf=32, cutoff=CUTOFF).to(DEVICE)
+model = CrystalGNN(num_elem=len(ELEMENTS), dim=112, n_layers=4, n_rbf=32, cutoff=CUTOFF).to(DEVICE)
 ema_model = copy.deepcopy(model).to(DEVICE)
 for p in ema_model.parameters():
     p.requires_grad_(False)
