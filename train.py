@@ -232,7 +232,9 @@ class CrystalGNN(nn.Module):
         self.elem_mlp = nn.Sequential(nn.Linear(self.elem_feat.size(1), dim), nn.SiLU(),
                                       nn.Linear(dim, dim))
         self.rbf = GaussianRBF(n_rbf, cutoff)
-        self.edge_mlp = nn.Sequential(nn.Linear(n_rbf, dim), nn.SiLU(), nn.Linear(dim, dim))
+        n_elem_feat = self.elem_feat.size(1)
+        self.edge_mlp = nn.Sequential(nn.Linear(n_rbf + 2 * n_elem_feat, dim), nn.SiLU(),
+                                      nn.Linear(dim, dim))
         self.angle_edge = AngleEdgeUpdate(dim, n_ang=8)
         self.convs = nn.ModuleList([CGConv(dim) for _ in range(n_layers)])
         self.global_mlp = nn.Sequential(nn.Linear(6, dim), nn.SiLU(), nn.Linear(dim, dim))
@@ -255,9 +257,11 @@ class CrystalGNN(nn.Module):
     def forward(self, g, lat):
         dist, bond_vec = bond_geometry(g, lat)
         nt = g.node_type.long()
+        ei = g.edge_index.long()
         h = self.embed(nt) + self.elem_mlp(self.elem_feat[nt])
-        e = self.edge_mlp(self.rbf(dist))
-        line_ei = line_edges_from_src(g.edge_index[0].long(), h.size(0))
+        edge_elem = torch.cat([self.elem_feat[nt[ei[0]]], self.elem_feat[nt[ei[1]]]], dim=-1)
+        e = self.edge_mlp(torch.cat([self.rbf(dist), edge_elem.to(dist.dtype)], dim=-1))
+        line_ei = line_edges_from_src(ei[0], h.size(0))
         e = self.angle_edge(e, bond_vec, line_ei)
         for conv in self.convs:
             h = conv(h, g.edge_index, e)
