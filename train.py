@@ -36,7 +36,8 @@ torch.cuda.manual_seed_all(SEED)
 
 # ===== FEATURIZATION (agent-editable; the experiment surface) ================
 CUTOFF = 5.0
-FEAT_KEY = f"s2g_cut{CUTOFF}"   # cache key -- CHANGE whenever featurize() output changes
+KNN_CAP = 12
+FEAT_KEY = f"s2g_cut{CUTOFF}_knn{KNN_CAP}"
 
 _train_structs, _train_labels = prepare.train_set()
 _test_structs = prepare.test_structures()
@@ -45,8 +46,36 @@ ELEMENTS = get_element_list(_train_structs + _test_structs)
 _converter = Structure2Graph(element_types=ELEMENTS, cutoff=CUTOFF)
 
 
+def _knn_cap(g, lat, K):
+    """Keep only the K nearest neighbors per source atom."""
+    ei = g.edge_index.long()
+    E = ei.size(1)
+    if E == 0 or K <= 0:
+        return g
+    L = lat[0]
+    pos = g.frac_coords @ L
+    off = g.pbc_offset @ L
+    _, dist = compute_pair_vector_and_distance(pos, ei, off)
+    src = ei[0]
+    N = g.num_nodes
+    max_dist = float(dist.max().item()) + 1.0
+    key = src.float() * max_dist + dist
+    order = key.argsort()
+    src_sorted = src[order]
+    n_per = torch.bincount(src_sorted, minlength=N)
+    cum_excl = torch.cumsum(n_per, dim=0) - n_per
+    rank_sorted = torch.arange(E, device=ei.device) - cum_excl[src_sorted]
+    keep_sorted = rank_sorted < K
+    keep_mask = torch.zeros(E, dtype=torch.bool, device=ei.device)
+    keep_mask[order] = keep_sorted
+    g.edge_index = ei[:, keep_mask]
+    g.pbc_offset = g.pbc_offset[keep_mask]
+    return g
+
+
 def _featurize_one(s):
     g, lat, state = _converter.get_graph(s)
+    g = _knn_cap(g, lat, KNN_CAP)
     return g, lat, torch.as_tensor(state, dtype=torch.float32)
 
 
@@ -63,8 +92,7 @@ def featurize(structures, tag):
 
 
 def bond_geometry(g, lat):
-    """Periodic bond distances [E] via matgl's tested PBC routine (moved here from prepare.py --
-    geometry IS featurization now; extend it, e.g. also return angles, if you change the graph)."""
+    """Periodic bond distances [E] and vectors [E, 3] via matgl's tested PBC routine."""
     ei = g.edge_index.long()
     batch = getattr(g, "batch", None)
     if batch is None:
@@ -76,8 +104,33 @@ def bond_geometry(g, lat):
         pos = torch.bmm(g.frac_coords.unsqueeze(1), Ln).squeeze(1)
         Le = lat[batch[ei[0]]]
         off = torch.bmm(g.pbc_offset.unsqueeze(1), Le).squeeze(1)
-    _, dist = compute_pair_vector_and_distance(pos, ei, off)
-    return dist
+    bond_vec, dist = compute_pair_vector_and_distance(pos, ei, off)
+    return dist, bond_vec
+
+
+def line_edges_from_src(src, num_atoms):
+    """Build line-graph edges: ordered pairs of distinct bonds sharing source atom."""
+    device = src.device
+    n_bonds = src.size(0)
+    src_sorted, perm = src.sort(stable=True)
+    n_per = torch.bincount(src_sorted, minlength=num_atoms)
+    offset = torch.cumsum(n_per, dim=0) - n_per
+    pair_counts = n_per * (n_per - 1)
+    n_pairs = int(pair_counts.sum().item())
+    if n_pairs == 0:
+        empty = torch.zeros(0, dtype=torch.long, device=device)
+        return torch.stack([empty, empty], dim=0)
+    pair_atom = torch.repeat_interleave(torch.arange(num_atoms, device=device), pair_counts)
+    block_offset = torch.cumsum(pair_counts, dim=0) - pair_counts
+    pair_rank = torch.arange(n_pairs, device=device) - block_offset[pair_atom]
+    n_a_minus_1 = (n_per[pair_atom] - 1).clamp_min(1)
+    first_local = pair_rank // n_a_minus_1
+    second_offset_local = pair_rank % n_a_minus_1
+    second_local = torch.where(second_offset_local < first_local,
+                               second_offset_local, second_offset_local + 1)
+    first_sorted = offset[pair_atom] + first_local
+    second_sorted = offset[pair_atom] + second_local
+    return torch.stack([perm[first_sorted], perm[second_sorted]], dim=0)
 
 
 def _loader(feats, labels, shuffle):
@@ -121,6 +174,40 @@ class GaussianRBF(nn.Module):
         return torch.exp(-self.gamma * (d.unsqueeze(-1) - self.centers) ** 2)
 
 
+class AngleRBF(nn.Module):
+    def __init__(self, n_ang=8):
+        super().__init__()
+        self.register_buffer("centers", torch.linspace(-1.0, 1.0, n_ang))
+        self.gamma = (n_ang / 2.0) ** 2
+
+    def forward(self, cos_t):
+        return torch.exp(-self.gamma * (cos_t.unsqueeze(-1) - self.centers) ** 2)
+
+
+class AngleEdgeUpdate(nn.Module):
+    """ALIGNN-lite: each bond receives an angle-aware message from sibling bonds
+    sharing its source atom, mediated by line-graph edges."""
+
+    def __init__(self, dim, n_ang=8):
+        super().__init__()
+        self.ang_rbf = AngleRBF(n_ang)
+        self.mlp = nn.Sequential(nn.Linear(2 * dim + n_ang, dim), nn.SiLU(),
+                                 nn.Linear(dim, dim))
+        self.ln = nn.LayerNorm(dim)
+
+    def forward(self, e, bond_vec, line_ei):
+        if line_ei.size(1) == 0:
+            return e
+        v1 = bond_vec[line_ei[0]].float()
+        v2 = bond_vec[line_ei[1]].float()
+        cos_t = (v1 * v2).sum(-1) / (v1.norm(dim=-1) * v2.norm(dim=-1)).clamp_min(1e-7)
+        cos_t = cos_t.clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+        ang = self.ang_rbf(cos_t).to(e.dtype)
+        msg = self.mlp(torch.cat([e[line_ei[0]], e[line_ei[1]], ang], dim=-1))
+        agg = scatter(msg, line_ei[1], dim=0, dim_size=e.size(0), reduce="mean")
+        return self.ln(e + agg)
+
+
 class CGConv(nn.Module):
     def __init__(self, dim):
         super().__init__()
@@ -146,6 +233,7 @@ class CrystalGNN(nn.Module):
                                       nn.Linear(dim, dim))
         self.rbf = GaussianRBF(n_rbf, cutoff)
         self.edge_mlp = nn.Sequential(nn.Linear(n_rbf, dim), nn.SiLU(), nn.Linear(dim, dim))
+        self.angle_edge = AngleEdgeUpdate(dim, n_ang=8)
         self.convs = nn.ModuleList([CGConv(dim) for _ in range(n_layers)])
         self.global_mlp = nn.Sequential(nn.Linear(6, dim), nn.SiLU(), nn.Linear(dim, dim))
         self.readout = nn.Sequential(nn.Linear(3 * dim, dim), nn.SiLU(),
@@ -165,10 +253,12 @@ class CrystalGNN(nn.Module):
         return self.global_mlp(x.to(dtype=dtype))
 
     def forward(self, g, lat):
-        dist = bond_geometry(g, lat)
+        dist, bond_vec = bond_geometry(g, lat)
         nt = g.node_type.long()
         h = self.embed(nt) + self.elem_mlp(self.elem_feat[nt])
         e = self.edge_mlp(self.rbf(dist))
+        line_ei = line_edges_from_src(g.edge_index[0].long(), h.size(0))
+        e = self.angle_edge(e, bond_vec, line_ei)
         for conv in self.convs:
             h = conv(h, g.edge_index, e)
         hg = torch.cat([global_mean_pool(h, g.batch), global_max_pool(h, g.batch),
