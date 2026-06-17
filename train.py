@@ -17,6 +17,7 @@ CosineAnnealingLR ramp the LR back UP once you pass it at a longer budget -- kee
 import os, copy, time
 import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
 from pymatgen.core.periodic_table import Element
+from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from torch_geometric.utils import scatter
 from torch_geometric.nn import global_mean_pool, global_max_pool
 from matgl.ext.pymatgen import Structure2Graph, get_element_list
@@ -37,7 +38,7 @@ torch.cuda.manual_seed_all(SEED)
 # ===== FEATURIZATION (agent-editable; the experiment surface) ================
 CUTOFF = 5.0
 KNN_CAP = 12
-FEAT_KEY = f"s2g_cut{CUTOFF}_knn{KNN_CAP}"
+FEAT_KEY = f"s2g_cut{CUTOFF}_knn{KNN_CAP}_sg"
 
 _train_structs, _train_labels = prepare.train_set()
 _test_structs = prepare.test_structures()
@@ -76,6 +77,11 @@ def _knn_cap(g, lat, K):
 def _featurize_one(s):
     g, lat, state = _converter.get_graph(s)
     g = _knn_cap(g, lat, KNN_CAP)
+    try:
+        sg = SpacegroupAnalyzer(s, symprec=0.1).get_space_group_number()
+    except Exception:
+        sg = 1
+    g.sg_num = torch.tensor([sg], dtype=torch.long)
     return g, lat, torch.as_tensor(state, dtype=torch.float32)
 
 
@@ -237,7 +243,8 @@ class CrystalGNN(nn.Module):
                                       nn.Linear(dim, dim))
         self.angle_edge = AngleEdgeUpdate(dim, n_ang=8)
         self.convs = nn.ModuleList([CGConv(dim) for _ in range(n_layers)])
-        self.global_mlp = nn.Sequential(nn.Linear(6, dim), nn.SiLU(), nn.Linear(dim, dim))
+        self.sg_embed = nn.Embedding(231, 16)
+        self.global_mlp = nn.Sequential(nn.Linear(6 + 16, dim), nn.SiLU(), nn.Linear(dim, dim))
         self.readout = nn.Sequential(nn.Linear(3 * dim, dim), nn.SiLU(),
                                      nn.Dropout(0.05), nn.Linear(dim, 1))
 
@@ -252,6 +259,8 @@ class CrystalGNN(nn.Module):
         sd = (md2 - md.square()).clamp_min(0.0).sqrt()
         x = torch.stack([torch.log1p(counts), torch.log1p(volume), torch.log1p(vpa),
                          torch.log1p(density), torch.log1p(md), torch.log1p(sd)], dim=-1)
+        sg = self.sg_embed(g.sg_num.view(-1).long())
+        x = torch.cat([x, sg.float()], dim=-1)
         return self.global_mlp(x.to(dtype=dtype))
 
     def forward(self, g, lat):
@@ -270,7 +279,7 @@ class CrystalGNN(nn.Module):
         return self.readout(hg).squeeze(-1)
 
 
-model = CrystalGNN(num_elem=len(ELEMENTS), dim=112, n_layers=4, n_rbf=32, cutoff=CUTOFF).to(DEVICE)
+model = CrystalGNN(num_elem=len(ELEMENTS), dim=120, n_layers=4, n_rbf=32, cutoff=CUTOFF).to(DEVICE)
 ema_model = copy.deepcopy(model).to(DEVICE)
 for p in ema_model.parameters():
     p.requires_grad_(False)
