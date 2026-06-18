@@ -174,7 +174,7 @@ class GaussianRBF(nn.Module):
     def __init__(self, n_rbf=32, cutoff=5.0):
         super().__init__()
         self.register_buffer("centers", torch.linspace(0.0, cutoff, n_rbf))
-        self.gamma = (n_rbf / cutoff) ** 2
+        self.gamma = (n_rbf / cutoff) ** 2 / 2.0
 
     def forward(self, d):
         return torch.exp(-self.gamma * (d.unsqueeze(-1) - self.centers) ** 2)
