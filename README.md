@@ -1,40 +1,23 @@
 # llm-autoresearch-bandgap
 
-An autonomous LLM research loop (Claude Opus 4.8) that searched for a crystal band-gap
-model on `matbench_mp_gap`. The agent edited a single training file, ran it, and kept or
-discarded each change against the held-out error, looping until interrupted. Over 184
-experiments it kept 7 changes; the resulting model reaches **0.1480 +/- 0.003 eV** mean
-absolute error (5-fold), the lowest reported among models trained without external
-pretraining (coGN reference: 0.1559 eV).
-
-This repository is a record of that run. It is not set up to re-run end to end; the
-preprocessed dataset (`data/`, ~30 GB) is regenerable and not included.
+An autonomous LLM research loop (Claude Opus 4.8) that searched `matbench_mp_gap` over 184
+experiments, kept 7 changes, and reached 0.1480 +/- 0.003 eV MAE (5-fold). A record of the
+run; the regenerable dataset (~30 GB) is not included.
 
 ## Files
+- `program.md` — the agent's instructions: goal, design axes, keep/discard rule, log format.
+- `train.py` — the model; the one file the agent edited. Final champion state.
+- `results.tsv` — experiment journal, one row each: 184 total (7 kept, 176 discarded, 1 crash).
+- `run.sh` — the launcher (one persistent Opus session).
+- `prepare.py` — read-only data / fold / metric loader.
+- `make_data.py` — downloads `matbench_mp_gap`, writes the dataset and official 5-fold split.
+- `run.log`, `loop.log` — run logs.
+- `.gitignore` — excludes the dataset and environments.
 
-| File | What it is |
-| --- | --- |
-| `program.md` | The instructions the agent followed: the goal, the design-space axes A1-A6, the keep-iff-`mae < best - 0.002` rule, and the logging format. |
-| `train.py` | The model. The one file the agent edited each experiment. This is its final (champion) state. |
-| `results.tsv` | The experiment journal: one row per experiment (commit, MAE, axis, keep/discard, description). 184 rows: 7 kept, 176 discarded, 1 crash. |
-| `run.sh` | The launcher: one persistent headless Claude Opus 4.8 session that owned the loop, with a self-heal resume. |
-| `prepare.py` | Read-only loader the agent could not edit: the dataset, the official fold, the held-out labels, and the MAE metric. |
-| `make_data.py` | One-time script that downloads `matbench_mp_gap` and writes the dataset and the official 5-fold split. |
-| `run.log` | Warnings printed during the run. |
-| `loop.log` | Launcher log (near-empty). |
-| `.gitignore` | Excludes the regenerable dataset and the Python environments. |
-
-### `finalize_5fold/`
-
-Validates the champion to the headline number.
-
-| File | What it is |
-| --- | --- |
-| `summary_5fold.tsv` | The result: per-fold MAE; mean 0.1480 +/- 0.003 eV. |
-| `train_5fold.py` | Trains the champion to convergence on each of the 5 official folds. |
-| `train_converge.py` | Trains a single fold to convergence (produces the convergence curve). |
-| `converge_curve.csv` | MAE vs training step for the convergence run. |
-| `smoke_curve.csv` | Short smoke-test curve. |
-| `run_5fold.sh` | Runs the 5 folds. |
-| `fold0.log` .. `fold4.log`, `run_5fold*.log`, `converge.log` | Per-run logs. |
-| `prepare.py` | Same loader as the parent, kept here so the finalize scripts run standalone. |
+## `finalize_5fold/`
+5-fold validation of the champion.
+- `summary_5fold.tsv` — per-fold MAE; mean 0.1480 +/- 0.003 eV.
+- `train_5fold.py` — trains the champion on each official fold.
+- `train_converge.py`, `converge_curve.csv` — single-fold convergence run and its curve.
+- `run_5fold.sh`, `smoke_curve.csv`, `*.log` — driver, smoke curve, per-run logs.
+- `prepare.py` — loader copy so the scripts run standalone.
