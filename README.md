@@ -1,8 +1,7 @@
 # llm-autoresearch-bandgap
 
-An autonomous LLM research loop (Claude Opus 4.8) that searched `matbench_mp_gap` over 184
-experiments, kept 7 changes, and reached 0.1480 +/- 0.003 eV MAE (5-fold). A record of the
-run; the regenerable dataset (~30 GB) is not included.
+A general-purpose coding agent that autonomously built the most accurate from-scratch model on
+the MatBench band-gap benchmark, by recombining known methods.
 
 ## Files
 - `program.md` — the agent's instructions: goal, design axes, keep/discard rule, log format.
