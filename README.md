@@ -1,11 +1,10 @@
 # llm-autoresearch-bandgap
 
-A general-purpose coding agent that autonomously built the most accurate from-scratch model on
-the MatBench band-gap benchmark, by recombining known methods. The task,
+A general-purpose coding agent that autonomously built the most accurate model trained without
+external pretraining on the MatBench band-gap benchmark, by recombining known methods. The task,
 [`matbench_mp_gap`](https://matbench.materialsproject.org/Leaderboards%20Per-Task/matbench_v0.1_matbench_mp_gap/),
-predicts the DFT band gap of a crystal from its structure (106,113 materials, official five-fold
-split). The agent's model reaches a mean absolute error of 0.1480 +/- 0.003 eV, below the 0.1559 eV
-of coGN, the top-ranked model on the MatBench leaderboard.
+predicts the DFT band gap of a crystal from its structure (106,113 materials). On the official
+five-fold split, the agent's model reaches a mean absolute error of 0.1480 +/- 0.003 eV.
 
 ## Files
 - `program.md` — the agent's instructions: goal, design axes, keep/discard rule, log format.
