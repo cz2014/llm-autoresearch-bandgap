@@ -1,0 +1,185 @@
+commit	mae	memory_gb	axis	status	description
+40ee879	0.177961	0.9	baseline	keep	seed train.py baseline
+47e0648	0.190402	0.9	A3	discard	Bessel RBF + polynomial envelope (n_rbf=32)
+fa15082	0.201254	1.4	A1	discard	cutoff 5.0->6.0 (42k steps vs 65k)
+a9833f8	0.188338	1.3	A2	discard	per-atom angle agg (cos_t Gaussian basis, 44k steps)
+d84cce6	0.175695	1.3	A4	keep	dim 64 -> 96 (46k steps, 292k params)
+d6810aa	0.177153	1.3	A5	discard	attention pool added (44k steps, 301k params)
+b5d59f4	0.178265	1.4	A3	discard	composition mean elem_feat in global state
+5481c4e	0.194310	1.9	A4	discard	per-layer edge update CGConv (32k steps, 441k params)
+583cd12	0.182245	1.7	A4	discard	dim 96->128 (37k steps, 512k params)
+a53522d	0.185942	1.6	A4	discard	n_layers 4->5 at dim=96 (38k steps, 347k params)
+0cc0b0c	0.174134	0.4	A1	discard	k-NN cap K=12 cutoff=5.0 (91k steps; below 0.002 margin)
+0c15ae4	0.167854	0.8	A1+A2	keep	k-NN cap K=12 + ALIGNN-style angle edge update (60k steps, 320k params)
+4735701	0.201672	1.9	A2	discard	interleaved 4x angle edge updates (24k steps, 407k params)
+cf5f887	0.168562	0.7	A2	discard	n_ang 8->16
+9271090	0.168437	0.9	A4	discard	dim 96->112 (55k steps, 433k params)
+cbe2054	0.174646	1.2	A1	discard	KNN K 12->16 (42k steps, denser graph)
+6c49f93	0.177640	1.3	A2	discard	2 angle edge updates (40k steps, 349k params)
+2b9cf40	0.167050	0.8	A2	discard	dist in angle MLP (below 0.002 margin)
+432accb	0.191051	0.8	A4	discard	LayerNorm instead of BatchNorm in CGConv
+9a51e53	0.171680	0.8	A2	discard	sum vs mean in angle aggregation
+3c10c79	0.168307	0.8	A3	discard	broadcast global state into atoms (60k steps)
+258f90a	0.172147	0.8	A3	discard	Bessel RBF (no envelope) with k-NN+angles
+93f28fc	0.167580	0.8	A6	discard	target standardize (sub-margin, -0.0003)
+271320c	0.168377	0.8	bundle	discard	dist-in-MLP + target standardize
+f1d55f0	0.163616	0.8	A3	keep	element-pair info in edge MLP (322k params, 60k steps)
+6c390c4	0.165097	0.7	A2	discard	dist in angle MLP + element-pair edge (no compounding)
+7b5b116	0.161023	0.9	A4	keep	dim 96 -> 112 with element-pair (435k params, 54k steps)
+112b30c	0.165398	1.0	A4	discard	dim 112->128 (50k steps, 564k params)
+0b55d1b	0.162868	0.9	A3	discard	triplet elem in angle MLP
+dbb7e89	0.163767	0.9	A5	discard	attention pool added to new arch
+1725660	0.162480	0.7	A1	discard	K cap 12->10 (64k steps, smaller graph)
+c19cf34	0.164507	0.9	A4	discard	deeper edge_mlp (3 layers)
+3120d34	0.167420	0.8	A3	discard	expanded element features 8->14
+09b1942	0.164772	0.9	A6	discard	AdamW wd=1e-5
+17d1f2b	0.164860	0.9	A6	discard	SCHED_TMAX 48->36
+a268027	0.166136	1.5	A6	discard	BATCH 64->128 (30k steps)
+9480bec	0.164143	0.9	A4	discard	JK-net average over conv layer outputs
+8bc2c66	0.164517	0.9	A4	discard	remove readout dropout
+3d5c75f	0.161943	0.9	A6	discard	EMA decay 0.005 -> 0.01
+07da8d5	0.164146	0.9	A6	discard	Smooth L1 (beta=0.1)
+bdd5046	0.164635	0.9	A2	discard	n_rbf 32 -> 64
+b0b824b	0.161645	0.9	A3	discard	per-atom nbr elem profile (sub-margin -0.0006)
+f145b20	0.163244	0.8	A3	discard	per-element bias on output
+97df7e6	0.184544	0.9	A4	discard	dropout 0.1 on CGConv messages
+8b444c6	0.163860	0.8	A4	discard	dim 112 -> 104 (56k steps, 377k params)
+a2f235b	0.170315	0.8	A4	discard	n_layers 4 -> 3 (61k steps, 359k params)
+d1031db	0.161779	0.9	A1	discard	cutoff 5.0 -> 6.0 with K=12
+a65ce83	0.000000	0.9	A4	crash	SwiGLU activation in CGConv (NaN, sum overflow)
+74e6614	0.168274	0.9	A4	discard	mean aggregation in CGConv
+c727c71	0.162690	1.0	A3	discard	lattice metrics (a,b,c,angles) in global state
+7c22adf	0.160964	0.9	A3	discard	abs(elem_diff) in edge_mlp (tiny improvement -0.00006)
+0462401	0.164977	0.9	A4	discard	deeper/wider readout MLP
+e2ea85c	0.163251	0.9	A6	discard	EMA decay 0.005 -> 0.003
+bf21efa	0.160108	0.9	A3	discard	space group embed 16d (sub-margin -0.0009)
+e272653	0.165784	0.9	bundle	discard	SG embed + abs(elem_diff)
+b1890aa	0.164848	0.9	A3	discard	SG embed 32d
+447b9b5	0.172678	0.9	A3	discard	SG embed in global + broadcast to atoms
+78e8104	0.163192	1.0	A4	discard	SG embed 16 + dim=128 (50k steps, 570k params)
+114e323	0.166129	0.9	A5	discard	pool bond features in readout
+af29966	0.163582	0.9	bundle	discard	SG embed + nbr-elem profile
+72a06bc	0.170731	1.2	A2	discard	wider angle MLP (hidden 2x dim, 48k steps)
+7142a94	0.165022	0.9	perf	discard	cached line graph (52k steps)
+cf85d8e	0.157828	0.9	bundle	keep	SG embed 16 + dim=120 (503k params, 52k steps)
+68c8f0d	0.164695	1.0	A4	discard	dim 120->128 with SG
+0e22a63	0.161100	0.9	A2	discard	SG+dim=120 + dist-in-angle-MLP
+0f928a9	0.157403	0.9	bundle	discard	SG+dim120+abs(elem_diff) sub-margin -0.0004
+7ed23a2	0.159252	1.0	A3	discard	SG embed 16 -> 24
+4e8dbd5	0.165756	0.9	A2	discard	SG+dim120 + n_rbf 32->64
+6e43f7a	0.161676	0.9	bundle	discard	SG+dim120 + target standardize
+5a3b4c8	0.163109	1.2	A1	discard	K 12->14 with SG+dim120 (43k steps)
+85fb407	0.161625	1.0	A3	discard	SG embed 16 -> 8
+2b780cd	0.158654	0.9	A3	discard	min/max bond length in globals
+5d9105d	0.158287	1.0	A4	discard	n_layers 4->5 with SG+dim120 (47k steps)
+6b49061	0.158411	0.9	A1	discard	cutoff 5.0->4.5 with SG+dim120
+f8dd52b	0.157374	0.9	A3	discard	center atom elem in angle (sub-margin -0.0005)
+091f67f	0.165005	0.9	bundle	discard	center elem angle + abs(elem_diff)
+17bdc1d	0.164394	0.9	A4	discard	initial-final residual skip with SG+dim120
+416aa4e	0.158923	1.0	A3	discard	SG embed 16 -> 12
+ec0b04f	0.159722	0.9	A6	discard	EMA decay 0.005 -> 0.007
+b32dbe7	0.160334	0.9	A4	discard	readout dropout 0.05 -> 0.10
+46a6ad5	0.160618	0.9	A6	discard	LR 1e-3 -> 8e-4
+8a6c8a8	0.159957	0.9	A6	discard	LR 1e-3 -> 1.2e-3
+df1f315	0.174454	1.4	A2	discard	2 stacked angle layers (35k steps)
+2ba26c2	0.157924	1.0	A4	discard	3-layer elem_mlp
+557d14c	0.183123	0.9	A4	discard	GroupNorm instead of BatchNorm in CGConv
+e90f6fc	0.159320	0.9	A3	discard	SUM element_feat in globals
+759d49a	0.162497	1.2	A2	discard	deeper angle MLP (3 layers)
+69c0e57	0.165993	1.0	A4	discard	dim 128 n_layers 3 (56k steps)
+0128702	0.158953	0.9	A2	discard	n_rbf 32->24
+ea1c329	0.159630	0.9	A4	discard	wider global_mlp hidden (2*dim)
+918ee0f	0.163940	0.7	A4	discard	dim 120->96 with SG (59k steps)
+0e9849e	0.163588	0.9	A3	discard	element product (a*b) in edge_mlp
+d8abdd1	0.161710	0.9	A6	discard	SCHED_TMAX 48->36
+5353dad	0.161535	0.9	A4	discard	learnable residual scale in CGConv
+308b3a0	0.157495	0.9	A6	discard	AdamW wd=5e-6 (sub-margin -0.0003)
+6ec0e46	0.159132	0.9	bundle	discard	AdamW wd=5e-6 + abs(elem_diff)
+ab5a8cc	0.166834	0.9	A4	discard	drop nn.Embedding (elem_mlp only)
+3a6a612	0.158910	0.9	A6	discard	EMA decay 0.005 -> 0.0025
+dddff85	0.158108	0.9	A6	discard	EMA decay 0.005 -> 0.004
+d8f8617	0.158984	0.9	A6	discard	Adam beta1 0.9 -> 0.95
+109e935	0.164808	1.0	A4	discard	dim 120->124 (49k steps)
+9fb24a4	0.158283	0.9	A3	discard	SG embed 16 -> 14
+769031b	0.159352	1.0	A3	discard	SG embed 16 -> 18
+2bfd6ea	0.158715	0.9	A4	discard	dropout 0.05 -> 0.02
+07844c2	0.159462	1.0	A6	discard	BATCH 64->48 (63k steps)
+bda0e29	0.160669	0.8	A4	discard	dim 96 n_layers 5 (54k steps)
+5494f01	0.162781	0.9	A6	discard	gradient clip norm 1.0
+ad2f5fa	0.160072	0.9	A4	discard	GELU instead of SiLU
+3994174	0.155438	0.9	A2	keep	RBF gamma /= 2 (wider Gaussians)
+fa7cc4a	0.158270	0.9	A2	discard	RBF gamma /= 4 (too wide)
+3eedd5c	0.162581	0.9	A2	discard	RBF gamma /= 1.5
+0cfe2cb	0.159178	0.9	A2	discard	RBF gamma /= 2.5
+8c19f6d	0.160205	0.9	A2	discard	AngleRBF gamma /= 2
+b68b7a5	0.161709	1.0	A4	discard	dim 120->128 with wider RBF
+56166e1	0.160562	0.9	A3	discard	n_rbf 32->48
+d1307aa	0.202686	2.4	A4	discard	multi-pass angle update per layer (slow)
+165260d	0.155959	1.1	A4	discard	n_layers 4->5 with wider RBF
+9b5715e	0.167561	0.9	A3	discard	Bessel basis with cosine envelope
+3740824	0.157062	0.9	A3	discard	RBF centers shifted to 0.5..cutoff
+efcb2cb	0.159759	0.9	A3	discard	composition globals (mean+std)
+b83152a	0.163942	1.0	A4	discard	deeper readout 2 hidden layers
+e96efa6	0.157713	0.9	A3	discard	angle RBF n_ang 8->16
+0a46bfc	0.159045	0.9	A6	discard	AdamW wd=1e-5
+5ab6b40	0.156775	0.9	A3	discard	third-side RBF in angle update
+cb7fce4	0.155630	0.9	A6	discard	EMA decay 0.005->0.003
+8998b14	0.166018	0.9	A6	discard	L1 -> Huber beta=0.5
+41eb69d	0.158281	0.9	A6	discard	EMA 0.005->0.002
+b88af65	0.158436	0.9	A1	discard	cutoff 5.0->6.0 with K=12
+dbcb755	0.160764	0.9	A3	discard	learnable per-center RBF gamma
+e7ace64	0.159931	0.9	A6	discard	SCHED_TMAX 48x->33x
+96abcc3	0.166124	1.2	A1	discard	K 12 -> 14
+4a21a6c	0.170697	0.9	A4	discard	GTU sigmoid*tanh in CGConv
+35d6b29	0.158978	0.9	A4	discard	remove dropout 0.05->0
+93e7735	0.157021	0.9	A6	discard	EMA 0.005 -> 0.007
+b431fb7	0.165909	1.3	A6	discard	BATCH 64 -> 96
+f1ce00d	nan	0.9	A4	discard	CFConv (SchNet style) NaN
+e6e65ed	0.167066	1.1	A4	discard	M3GNet edge update per conv
+c77037f	0.173451	0.9	A4	discard	remove BN from CGConv
+8483075	0.162007	0.9	A4	discard	add sqrt sum pool
+1e08a1b	0.171026	1.0	A4	discard	dim 120 -> 132
+49a3f53	0.155914	0.9	A6	discard	clamp predictions at 0
+2f72aba	0.161313	0.9	A6	discard	log1p target / expm1 predict
+0a531ad	0.165621	0.9	A6	discard	LR 1e-3 -> 1.5e-3
+07585c2	0.161514	0.9	A6	discard	LR 1e-3 -> 5e-4
+415acd0	0.173724	1.5	A4	discard	TWO angle updates
+69072ce	0.157914	0.9	A6	discard	grad clip max_norm=5
+405e45c	0.170162	1.6	A6	discard	BATCH 128 + LR 2e-3
+77d9109	0.158450	0.9	A6	discard	student+EMA blend 50/50
+133654d	0.161151	1.2	A4	discard	deeper angle MLP 2 hidden
+043682e	0.159707	0.9	A4	discard	SiLU -> GELU activation
+e87a690	0.161263	0.9	A3	discard	raw d/cutoff and 1/d in edge_mlp
+d3113ee	0.162794	0.9	A6	discard	Adam betas (0.9, 0.99)
+77e8bec	0.157143	0.9	A6	discard	dual EMA (0.005, 0.001)
+888f0dc	0.166241	0.9	A4	discard	CGConv sum -> mean agg
+ddceadc	0.155912	0.9	A6	discard	eta_min 1e-5 -> 1e-6
+4b28028	0.155949	0.9	A6	discard	LR warmup 1000 steps
+feac2fe	0.171162	1.1	A4	discard	dim=144 n_layers=3
+a5489ab	0.157515	0.9	A6	discard	weighted L1 1.5x non-zero
+db25eaf	0.181726	0.9	A4	discard	BN -> GroupNorm
+2441193	0.162893	1.0	A4	discard	dim 120 -> 124
+7866938	0.159286	0.9	A6	discard	SCHED_TMAX 48x -> 60x
+b1422da	0.157749	0.9	A6	discard	BN momentum 0.1 -> 0.01
+649d92f	0.160399	0.9	A6	discard	EMA buffers smoothing
+d6e2e73	0.161549	0.9	A3	discard	coord count + mean dist in h init
+3efdae1	0.160517	0.9	A3	discard	dual-scale RBF narrow+wide
+22ed921	0.161559	0.9	A3	discard	angle n_ang 8 -> 6
+97085fd	0.159251	1.0	A6	discard	BATCH 64 -> 48
+b877971	0.159408	0.9	A6	discard	L1+0.3*MSE blend
+42b5bf1	0.160679	0.9	A4	discard	stoch depth 10%
+20ee344	0.162793	0.9	A4	discard	angle update scale 0.5 init
+abeeb25	0.161518	0.9	A6	discard	EMA 0.005 -> 0.004
+8b3a072	0.158578	0.9	A4	discard	add global min pool
+4eb8f1b	0.159650	0.9	A4	discard	dropout 0.05 -> 0.025
+f3d7c1a	0.161996	0.9	A4	discard	angle output * 0.3 fixed scale
+1ead04e	0.161047	0.9	A4	discard	BN affine=False
+eca3dad	0.158928	1.0	A3	discard	SG embed 16 -> 32
+f16b049	0.156237	0.9	A3	discard	AngleRBF inner centers
+f040ed2	0.170265	1.1	A4	discard	CGConv GAT-style attention
+924780f	0.156959	0.9	A4	discard	SiLU -> Mish
+22947bc	0.160615	0.9	A6	discard	LR 1e-3 -> 8e-4
+747f3fd	0.166288	0.9	A4	discard	SiLU -> ELU
+95772e5	0.160660	1.0	A4	discard	deeper edge_mlp 2 hidden
+c4fce07	0.159720	1.1	A4	discard	CGConv extra SiLU branch
+11e5380	0.157533	0.9	A3	discard	RBF centers extended

@@ -1,0 +1,103 @@
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_5fold.py:151: UserWarning: No data available for atomic_radius_calculated for La
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_5fold.py:151: UserWarning: No data available for atomic_radius_calculated for Ce
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_5fold.py:151: UserWarning: No data available for atomic_radius_calculated for Ho
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_5fold.py:151: UserWarning: No data available for atomic_radius_calculated for Ac
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_5fold.py:151: UserWarning: No data available for atomic_radius_calculated for Th
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_5fold.py:151: UserWarning: No data available for atomic_radius_calculated for Pa
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_5fold.py:151: UserWarning: No data available for atomic_radius_calculated for U
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_5fold.py:151: UserWarning: No data available for atomic_radius_calculated for Np
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_5fold.py:151: UserWarning: No data available for atomic_radius_calculated for Pu
+  v = getattr(el, name, None)
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+/work/autohive_runs/2026-06-08_mpgap_calibration/.venv/lib/python3.12/site-packages/torch_geometric/utils/_scatter.py:91: UserWarning: The usage of `scatter(reduce='max')` can be accelerated via the 'torch-scatter' package, but it was not found
+  warnings.warn(
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+spglib: ssm_get_exact_positions failed.
+spglib: get_bravais_exact_positions_and_lattice failed.
+---
+mae:              0.144587
+training_seconds: 9000.0
+feat_seconds:     313.5
+peak_vram_mb:     1031.1
+num_params:       503617
+steps:            313622

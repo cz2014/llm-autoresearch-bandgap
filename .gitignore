@@ -1,8 +1,6 @@
 .venv
 .venv_data
 data/
-*.log
 __pycache__/
 *.pyc
-results.tsv
 ref

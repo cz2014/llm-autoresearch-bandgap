@@ -1,0 +1,77 @@
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_converge.py:151: UserWarning: No data available for atomic_radius_calculated for La
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_converge.py:151: UserWarning: No data available for atomic_radius_calculated for Ce
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_converge.py:151: UserWarning: No data available for atomic_radius_calculated for Ho
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_converge.py:151: UserWarning: No data available for atomic_radius_calculated for Ac
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_converge.py:151: UserWarning: No data available for atomic_radius_calculated for Th
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_converge.py:151: UserWarning: No data available for atomic_radius_calculated for Pa
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_converge.py:151: UserWarning: No data available for atomic_radius_calculated for U
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_converge.py:151: UserWarning: No data available for atomic_radius_calculated for Np
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-19_mpgap_finalize/train_converge.py:151: UserWarning: No data available for atomic_radius_calculated for Pu
+  v = getattr(el, name, None)
+/work/autohive_runs/2026-06-08_mpgap_calibration/.venv/lib/python3.12/site-packages/torch_geometric/utils/_scatter.py:91: UserWarning: The usage of `scatter(reduce='max')` can be accelerated via the 'torch-scatter' package, but it was not found
+  warnings.warn(
+CURVE 300.0 10514 9.995e-04 0.246309
+CURVE 600.0 20685 9.980e-04 0.199174
+CURVE 900.0 30846 9.955e-04 0.191810
+CURVE 1200.0 40838 9.922e-04 0.181319
+CURVE 1500.0 50965 9.878e-04 0.169435
+CURVE 1800.0 61090 9.825e-04 0.166815
+CURVE 2100.0 71082 9.764e-04 0.161615
+CURVE 2400.0 81211 9.692e-04 0.162957
+CURVE 2700.0 91400 9.612e-04 0.163010
+CURVE 3000.0 101442 9.523e-04 0.157873
+CURVE 3300.0 111561 9.425e-04 0.157772
+CURVE 3600.0 121552 9.320e-04 0.154178
+CURVE 3900.0 131724 9.205e-04 0.156218
+CURVE 4200.0 141856 9.082e-04 0.154119
+CURVE 4500.0 151977 8.951e-04 0.152648
+CURVE 4800.0 161982 8.814e-04 0.151260
+CURVE 5100.0 172107 8.669e-04 0.151551
+CURVE 5400.0 182066 8.518e-04 0.150249
+CURVE 5700.0 192171 8.359e-04 0.151278
+CURVE 6000.0 202308 8.193e-04 0.150503
+CURVE 6300.0 212432 8.022e-04 0.152021
+CURVE 6600.0 222441 7.846e-04 0.149038
+CURVE 6900.0 232571 7.663e-04 0.149986
+CURVE 7200.0 242530 7.478e-04 0.156160
+CURVE 7500.0 252651 7.285e-04 0.147499
+CURVE 7800.0 262769 7.088e-04 0.148661
+CURVE 8100.0 272893 6.886e-04 0.150917
+CURVE 8400.0 282869 6.685e-04 0.147936
+CURVE 8700.0 292980 6.477e-04 0.147563
+CURVE 9000.0 302995 6.269e-04 0.148960
+CURVE 9300.0 313130 6.055e-04 0.147743
+CURVE 9600.0 323258 5.840e-04 0.147752
+CURVE 9900.0 333387 5.624e-04 0.150773
+CURVE 10200.0 343392 5.408e-04 0.148558
+CURVE 10500.0 353515 5.190e-04 0.146622
+CURVE 10800.0 363499 4.974e-04 0.146610
+CURVE 11100.0 373635 4.756e-04 0.147306
+CURVE 11400.0 383762 4.538e-04 0.146261
+CURVE 11700.0 393898 4.321e-04 0.147118
+CURVE 12000.0 403891 4.108e-04 0.147008
+CURVE 12300.0 413989 3.895e-04 0.146647
+CURVE 12600.0 423935 3.687e-04 0.146228
+CURVE 12900.0 434058 3.478e-04 0.146639
+CURVE 13200.0 444185 3.272e-04 0.145693
+CURVE 13500.0 454312 3.070e-04 0.147030
+CURVE 13800.0 464281 2.875e-04 0.145723
+CURVE 14100.0 474397 2.681e-04 0.145572
+CURVE 14400.0 484402 2.493e-04 0.145391
+CURVE 14700.0 494556 2.308e-04 0.145185
+CURVE 15000.0 504710 2.128e-04 0.144934
+---
+mae:              0.144934
+training_seconds: 15010.1
+feat_seconds:     18.2
+peak_vram_mb:     950.9
+num_params:       503617
+steps:            504710
