@@ -2,9 +2,9 @@
 
 A general-purpose coding agent that autonomously optimized expert-designed crystal graph networks
 for band-gap prediction. By recombining known methods, the agent's model reaches a mean absolute
-error of 0.1480 +/- 0.003 eV on the MatBench benchmark's official five-fold split. The task,
+error of 0.1480 +/- 0.003 eV on the MatBench benchmark's official
 [`matbench_mp_gap`](https://matbench.materialsproject.org/Leaderboards%20Per-Task/matbench_v0.1_matbench_mp_gap/),
-predicts the DFT band gap of a crystal from its structure (106,113 materials).
+which predicts the DFT band gap of a crystal from its structure. This repo is the development history.
 
 ## Files
 - `program.md` — the agent's instructions: goal, design axes, keep/discard rule, log format.
