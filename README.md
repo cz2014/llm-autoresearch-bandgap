@@ -1,7 +1,8 @@
 # llm-autoresearch-bandgap
 
 A general-purpose coding agent (Claude Code running Claude Opus 4.8) that autonomously optimized
-expert-designed crystal graph networks for band-gap prediction. By recombining known methods, the
+expert-designed crystal graph networks for band-gap prediction. The agent ran 184 fixed-budget
+experiments (1500 s of training each on a single RTX 2070 Super, FP16). By recombining known methods, the
 agent's model reaches a mean absolute error of 0.1480 +/- 0.003 eV on the MatBench benchmark's official
 [`matbench_mp_gap`](https://matbench.materialsproject.org/Leaderboards%20Per-Task/matbench_v0.1_matbench_mp_gap/),
 which predicts the DFT band gap of a crystal from its structure. This repo is the development history.
@@ -19,7 +20,7 @@ which predicts the DFT band gap of a crystal from its structure. This repo is th
 ## `finalize_5fold/`
 5-fold validation of the champion.
 - `summary_5fold.tsv` — per-fold MAE; mean 0.1480 +/- 0.003 eV.
-- `train_5fold.py` — trains the champion on each official fold.
+- `train_5fold.py` — trains the champion on each official fold (9000 s per fold, same GPU).
 - `train_converge.py`, `converge_curve.csv` — single-fold convergence run and its curve.
 - `run_5fold.sh`, `smoke_curve.csv`, `*.log` — driver, smoke curve, per-run logs.
 - `prepare.py` — loader copy so the scripts run standalone.
